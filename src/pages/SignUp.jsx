@@ -1,26 +1,93 @@
 import React, { useState } from 'react';
-import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaTwitter } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FaUser, FaEnvelope, FaLock, FaGoogle } from 'react-icons/fa';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const SignUp = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
+
+  const { createUser, updateUserProfile, googleSignIn } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear error when user starts typing
+    if (error) setError('');
   };
 
-  const handleSubmit = () => {
-    console.log('Sign up data:', formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.password) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      // Create user with email and password
+      await createUser(formData.email, formData.password);
+      
+      // Update user profile with name
+      await updateUserProfile(formData.name);
+      
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.error('Sign up error:', error);
+      setError(getErrorMessage(error.code));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      await googleSignIn();
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.error('Google sign up error:', error);
+      setError(getErrorMessage(error.code));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case 'auth/email-already-in-use':
+        return 'An account with this email already exists';
+      case 'auth/invalid-email':
+        return 'Invalid email address';
+      case 'auth/weak-password':
+        return 'Password is too weak. Please choose a stronger password';
+      case 'auth/operation-not-allowed':
+        return 'Email/password accounts are not enabled. Please contact support';
+      case 'auth/popup-closed-by-user':
+        return 'Google sign-up was cancelled';
+      default:
+        return 'An error occurred during sign up';
+    }
   };
 
   return (
@@ -33,8 +100,15 @@ const SignUp = () => {
             <h1 className="text-5xl font-bold text-gray-800 mb-2">Create Account</h1>
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+
           {/* Form Fields */}
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Full Name Field */}
             <div className="relative">
               <FaUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -46,6 +120,7 @@ const SignUp = () => {
                 onChange={handleInputChange}
                 className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -60,6 +135,7 @@ const SignUp = () => {
                 onChange={handleInputChange}
                 className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -67,51 +143,26 @@ const SignUp = () => {
             <div className="relative">
               <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
-                type={showPassword ? 'text' : 'password'}
+                type="password"
                 name="password"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full pl-12 pr-12 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                 required
+                disabled={loading}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
             </div>
 
-            {/* Confirm Password Field */}
-            <div className="relative">
-              <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className="w-full pl-12 pr-12 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
             {/* Sign Up Button */}
             <button
-              onClick={handleSubmit}
-              className="w-full py-4 bg-gradient-to-b from-blue-900 to-cyan-500 text-white font-semibold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 bg-gradient-to-b from-blue-900 to-cyan-500 text-white font-semibold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Create Account
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
-          </div>
+          </form>
 
           {/* Divider */}
           <div className="flex items-center my-8">
@@ -122,7 +173,11 @@ const SignUp = () => {
 
           {/* Social Login */}
           <div className="flex justify-center mb-8">
-            <button className="p-4 px-8 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-300 group">
+            <button 
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              className="p-4 px-8 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <FaGoogle className="text-black text-xl mx-auto group-hover:scale-110 transition-transform" />
             </button>
           </div>
@@ -132,9 +187,9 @@ const SignUp = () => {
             <p className="text-gray-600">
               Already have an account?{' '}
               <Link to='/signin'>
-              <button className="text-blue-600 hover:text-blue-800 font-semibold transition-colors">
-                Log In
-              </button>
+                <button className="text-blue-600 hover:text-blue-800 font-semibold transition-colors">
+                  Log In
+                </button>
               </Link>
             </p>
           </div>
