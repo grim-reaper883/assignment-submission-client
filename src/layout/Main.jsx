@@ -1,7 +1,8 @@
-import { FaCalendarAlt, FaCreditCard, FaFileAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FaCalendarAlt, FaCreditCard, FaFileAlt, FaPlus, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { Outlet } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import useAuth from '../hooks/useAuth';
+import { MdReviews } from "react-icons/md";
 
 const Main = () => {
   const { user, logOut } = useAuth();
@@ -64,6 +65,30 @@ const Main = () => {
                   <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
                     <FaFileAlt size={20} className="mr-3" />
                     <span>Submission</span>
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <Link to='/manageAssignments'>
+                  <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                    <FaCalendarAlt size={20} className="mr-3" />
+                    <span>Manage Assignments</span>
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <Link to='/addAssignment'>
+                  <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                    <FaPlus size={20} className="mr-3" />
+                    <span>Add Assignments</span>
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <Link to='/reviewSubmissions'>
+                  <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                    <MdReviews size={20} className="mr-3" />
+                    <span>Review Submissions</span>
                   </div>
                 </Link>
               </li>

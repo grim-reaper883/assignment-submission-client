@@ -6,6 +6,10 @@ import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import Submission from "../pages/Submission";
 import ProtectedRoute from "../components/ProtectedRoute";
+import ManageAssignments from "../pages/ManageAssignments";
+import ReviewSubmissions from "../pages/ReviewSubmissions";
+import AddAssignment from "../pages/AddAssignment";
+import SubmissionForm from "../pages/SubmissionForm";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +27,22 @@ export const router = createBrowserRouter([
       {
         path: 'submission',
         element: <Submission />
+      },
+      {
+        path: 'manageAssignments',
+        element: <ManageAssignments />
+      },
+      {
+        path: 'addAssignment',
+        element: <AddAssignment />
+      },
+      {
+        path: 'submissionForm',
+        element: <SubmissionForm />
+      },
+      {
+        path: 'reviewSubmissions',
+        element: <ReviewSubmissions />
       },
     ]
   },

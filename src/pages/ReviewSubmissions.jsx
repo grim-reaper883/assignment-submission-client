@@ -1,22 +1,16 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
-const MySubmissions = () => {
+const ReviewSubmissions = () => {
   const [submissions, setSubmissions] = useState([]);
- 
-
-  useEffect(()=>{
-    axios.get("http://localhost:5000/submissions")
-    .then(res=> setSubmissions(res.data))
-  },[]);
-
- 
-
-
+  useEffect(() => {
+    axios.get('http://localhost:5000/submissions')
+      .then(res => setSubmissions(res.data))
+  }, [])
   return (
     <div className="">
       <div className="text-center text-white mb-12">
-        <h1 className="text-5xl font-bold mb-4">My Submissions</h1>
+        <h1 className="text-5xl font-bold mb-4">Review Submissions</h1>
       </div>
 
       <div className="overflow-x-auto">
@@ -28,7 +22,7 @@ const MySubmissions = () => {
               <th>Submission URL</th>
               <th>Submitted At</th>
               <th>Status</th>
-              <th>Feedback</th>
+              <th>Review</th>
             </tr>
           </thead>
           <tbody>
@@ -37,9 +31,9 @@ const MySubmissions = () => {
                 <td>{index + 1}</td>
                 <td>{submission.assignmentId}</td>
                 <td>
-                  <a 
-                    href={submission.submissionURL} 
-                    target="_blank" 
+                  <a
+                    href={submission.submissionURL}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
                   >
@@ -47,15 +41,15 @@ const MySubmissions = () => {
                   </a>
                 </td>
                 <td>{new Date(submission.submittedAt).toLocaleString()}</td>
-                <td>
-                  <span className={`badge ${
-                    submission.status === 'Accepted' ? 'badge-success' :
-                    submission.status === 'Rejected' ? 'badge-error' : 'badge-warning'
-                  }`}>
-                    {submission.status}
-                  </span>
-                </td>
+
                 <td>{submission.feedback || "No feedback yet"}</td>
+                <td>
+                  <select defaultValue="Pending" className="select">
+                    <option disabled={true}>Pending</option>
+                    <option>Accepted</option>
+                    <option>Rejected</option>
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -65,4 +59,4 @@ const MySubmissions = () => {
   );
 };
 
-export default MySubmissions;
+export default ReviewSubmissions;
