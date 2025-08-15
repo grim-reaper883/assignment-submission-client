@@ -1,6 +1,16 @@
-import React from 'react';
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-const assignment = () => {
+
+const Assignment = () => {
+  const [assignments, setAssignments] = useState([]);
+
+  useEffect(()=>{
+    axios.get("http://localhost:5000/assignments")
+    .then(res=> setAssignments(res.data))
+  },[]);
+
+
   return (
     <div>
       <div className="text-center text-white mb-12">
@@ -13,34 +23,24 @@ const assignment = () => {
           {/* head */}
           <thead>
             <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Deadline</th>
               <th></th>
-              <th>Name</th>
-              <th>Job</th>
-              <th>Favorite Color</th>
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
-            <tr>
-              <th>1</th>
-              <td>Cy Ganderton</td>
-              <td>Quality Control Specialist</td>
-              <td>Blue</td>
-            </tr>
-            {/* row 2 */}
-            <tr>
-              <th>2</th>
-              <td>Hart Hagerty</td>
-              <td>Desktop Support Technician</td>
-              <td>Purple</td>
-            </tr>
-            {/* row 3 */}
-            <tr>
-              <th>3</th>
-              <td>Brice Swyre</td>
-              <td>Tax Accountant</td>
-              <td>Red</td>
-            </tr>
+            {
+               assignments.map((assignments,index)=><tr key={assignments._id}>
+              <th>{index+1}</th>
+              <td>{assignments.title}</td>
+              <td>{assignments.description}</td>
+              <td>{assignments.deadline}</td>
+              <td><button className="btn btn-accent">Submit</button></td>
+            </tr>)
+            }
+            
           </tbody>
         </table>
       </div>
@@ -48,4 +48,4 @@ const assignment = () => {
   );
 };
 
-export default assignment;
+export default Assignment;

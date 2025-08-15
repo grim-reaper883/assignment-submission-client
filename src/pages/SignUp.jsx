@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { FaUser, FaEnvelope, FaLock, FaGoogle } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import useAxiosPublic from '../hooks/useAxiosPublic';
 
 const SignUp = () => {
+  const axiosPublic = useAxiosPublic();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -28,7 +30,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.password) {
       setError('Please fill in all fields');
       return;
@@ -44,11 +46,34 @@ const SignUp = () => {
 
     try {
       // Create user with email and password
-      await createUser(formData.email, formData.password);
-      
+      const userCredential = await createUser(formData.email, formData.password);
+
       // Update user profile with name
       await updateUserProfile(formData.name);
-      
+
+      // Extract user info from credentials
+      const { user } = userCredential; // Destructure the user object
+
+      // Save user to your database
+      try {
+        const userInfo = {
+          name: formData.name,
+          email: user.email, // Use the actual email from Firebase
+          role: 'student'
+        };
+
+        await axiosPublic.post('/users', userInfo);
+        console.log('user saved to database successfully');
+
+        // Now generate JWT token
+        await axiosPublic.post('/jwt', { email: user.email });
+        console.log('JWT token generated successfully');
+
+      } catch (error) {
+        console.error('error saving user to database', error);
+        setError('Failed to save user data. Please try again.');
+      }
+
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Sign up error:', error);
@@ -63,7 +88,30 @@ const SignUp = () => {
     setError('');
 
     try {
-      await googleSignIn();
+      // Sign in with Google
+      const result = await googleSignIn();
+      const user = result.user;
+
+      // Save user to your database
+      try {
+        const userInfo = {
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          role: 'student'
+        };
+        await axiosPublic.post('/users', userInfo);
+        console.log('Google user saved to database successfully');
+
+        // Generate JWT token
+        await axiosPublic.post('/jwt', { email: user.email });
+        console.log('JWT token generated successfully');
+
+      } catch (error) {
+        console.error('error saving Google user to database', error);
+        setError('Failed to save user data. Please try again.');
+      }
+
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Google sign up error:', error);
@@ -173,7 +221,7 @@ const SignUp = () => {
 
           {/* Social Login */}
           <div className="flex justify-center mb-8">
-            <button 
+            <button
               onClick={handleGoogleSignIn}
               disabled={loading}
               className="p-4 px-8 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"

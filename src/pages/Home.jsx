@@ -7,7 +7,7 @@ const Home = () => {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="">
       <div className="max-w-6xl mx-auto">
         {/* Welcome Header */}
         <div className="text-center text-white mb-12">
@@ -83,4 +83,5 @@ const Home = () => {
 };
 
 export default Home;
+
 

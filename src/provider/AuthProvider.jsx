@@ -3,10 +3,8 @@ import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, onAuthStat
 import { app } from "../firebase/firebase.config";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 
-
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
-
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -28,15 +26,28 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, googleProvider);
   }
 
-  const logOut = () => {
+  const logOut = async () => {
     setLoading(true);
-    return signOut(auth);
+    try {
+      await signOut(auth);
+      try {
+        await axiosPublic.post('/logout');
+      } catch (error) {
+        console.warn('Failed to clear cookie:', error);
 
-  }
+      }
+
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const updateUserProfile = (name, photo) => {
     return updateProfile(auth.currentUser, {
-      displayName: name, photoURL: photo
+      displayName: name,
+      photoURL: photo
     });
   }
 
@@ -44,24 +55,22 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
       if (currentUser) {
-        const userInfo = { email: currentUser.email };
-        axiosPublic.post('/jwt', userInfo)
+        // Only generate JWT if user exists in Firebase
+        axiosPublic.post('/jwt', { email: currentUser.email })
           .then(res => {
-            if (res.data.token) {
-              localStorage.setItem('access-token', res.data.token);
-            }
+            console.log('JWT generated successfully', res.data);
           })
+          .catch(error => {
+            console.log('Error generating JWT:', error);
+            // If JWT generation fails, it might be because user doesn't exist in DB yet
+            // This is handled during signup
+          });
       }
-      else {
-        localStorage.removeItem('access-token');
-      }
-
       setLoading(false);
     });
-    return () => {
-      return unsubscribe();
-    }
-  }, [axiosPublic])
+
+    return () => unsubscribe();
+  }, [axiosPublic]);
 
   const authInfo = {
     user,

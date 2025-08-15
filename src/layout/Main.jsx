@@ -9,7 +9,6 @@ const Main = () => {
   const handleLogout = async () => {
     try {
       await logOut();
-      // The ProtectedRoute will automatically redirect to signin
     } catch (logoutError) {
       console.error('Logout error:', logoutError);
     }
