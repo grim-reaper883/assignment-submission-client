@@ -58,7 +58,7 @@ const Home = () => {
                     Create and manage course assignments for your students
                   </p>
                   <Link to="/manageAssignments">
-                    <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+                    <button className="bg-purple-500 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
                       Manage Assignments
                     </button>
                   </Link>
@@ -75,7 +75,7 @@ const Home = () => {
                     Review and grade student assignment submissions
                   </p>
                   <Link to="/reviewSubmissions">
-                    <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+                    <button className="bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
                       Review Submissions
                     </button>
                   </Link>
@@ -95,7 +95,7 @@ const Home = () => {
                     View and manage your course assignments
                   </p>
                   <Link to="/assignment">
-                    <button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+                    <button className="bg-blue-500  text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
                       View Assignments
                     </button>
                   </Link>
@@ -112,7 +112,7 @@ const Home = () => {
                     Submit and track your assignment submissions
                   </p>
                   <Link to="/submission">
-                    <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+                    <button className="bg-green-500  text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
                       View Submissions
                     </button>
                   </Link>

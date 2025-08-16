@@ -52,7 +52,15 @@ const Main = () => {
             <ul className="space-y-2">
               {
                 isInstructor ? <>
-                {/* instructor ui */}
+                  {/* instructor ui */}
+                  <li>
+                    <Link to='/'>
+                      <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                        <FaUser size={20} className="mr-3" />
+                        <span>Home</span>
+                      </div>
+                    </Link>
+                  </li>
                   <li>
                     <Link to='/manageAssignments'>
                       <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
@@ -78,15 +86,15 @@ const Main = () => {
                     </Link>
                   </li>
                 </> : <>
-                {/* student ui */}
-                <li>
-                  <Link to='/'>
-                    <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
-                      <FaUser size={20} className="mr-3" />
-                      <span>Home</span>
-                    </div>
-                  </Link>
-                </li>
+                  {/* student ui */}
+                  <li>
+                    <Link to='/'>
+                      <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                        <FaUser size={20} className="mr-3" />
+                        <span>Home</span>
+                      </div>
+                    </Link>
+                  </li>
                   <li>
                     <Link to='/assignment'>
                       <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
