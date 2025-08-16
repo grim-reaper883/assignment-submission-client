@@ -11,10 +11,11 @@ const SignUp = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    role: ''
   });
 
-  const { createUser, updateUserProfile, googleSignIn } = useAuth();
+  const { createUser, updateUserProfile, updateUserRole, googleSignIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
@@ -31,7 +32,7 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.password) {
+    if (!formData.name || !formData.email || !formData.password || !formData.role) {
       setError('Please fill in all fields');
       return;
     }
@@ -54,16 +55,19 @@ const SignUp = () => {
       // Extract user info from credentials
       const { user } = userCredential; // Destructure the user object
 
-      // Save user to your database
-      try {
-        const userInfo = {
-          name: formData.name,
-          email: user.email, // Use the actual email from Firebase
-          role: 'student'
-        };
+              // Save user to your database
+        try {
+          const userInfo = {
+            name: formData.name,
+            email: user.email, // Use the actual email from Firebase
+            role: formData.role.toLowerCase()
+          };
 
         await axiosPublic.post('/users', userInfo);
         console.log('user saved to database successfully');
+
+        // Update local role state
+        updateUserRole(formData.role.toLowerCase());
 
         // Now generate JWT token
         await axiosPublic.post('/jwt', { email: user.email });
@@ -92,14 +96,14 @@ const SignUp = () => {
       const result = await googleSignIn();
       const user = result.user;
 
-      // Save user to your database
-      try {
-        const userInfo = {
-          name: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          role: 'student'
-        };
+              // Save user to your database
+        try {
+          const userInfo = {
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            role: 'student' // Default role for Google sign-in
+          };
         await axiosPublic.post('/users', userInfo);
         console.log('Google user saved to database successfully');
 
@@ -200,6 +204,21 @@ const SignUp = () => {
                 required
                 disabled={loading}
               />
+            </div>
+            {/* Role Selection Field */}
+            <div className="relative">
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                className="w-full pl-4 pr-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                required
+                disabled={loading}
+              >
+                <option value="">Select a role</option>
+                <option value="student">Student</option>
+                <option value="instructor">Instructor</option>
+              </select>
             </div>
 
             {/* Sign Up Button */}

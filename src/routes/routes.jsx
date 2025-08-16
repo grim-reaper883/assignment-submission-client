@@ -6,6 +6,7 @@ import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import Submission from "../pages/Submission";
 import ProtectedRoute from "../components/ProtectedRoute";
+import RoleBasedRoute from "../components/RoleBasedRoute";
 import ManageAssignments from "../pages/ManageAssignments";
 import ReviewSubmissions from "../pages/ReviewSubmissions";
 import AddAssignment from "../pages/AddAssignment";
@@ -30,19 +31,19 @@ export const router = createBrowserRouter([
       },
       {
         path: 'manageAssignments',
-        element: <ManageAssignments />
+        element: <RoleBasedRoute allowedRoles={['instructor']}><ManageAssignments /></RoleBasedRoute>
       },
       {
         path: 'addAssignment',
-        element: <AddAssignment />
+        element: <RoleBasedRoute allowedRoles={['instructor']}><AddAssignment /></RoleBasedRoute>
       },
       {
         path: 'submissionForm',
-        element: <SubmissionForm />
+        element: <RoleBasedRoute allowedRoles={['student']}><SubmissionForm /></RoleBasedRoute>
       },
       {
         path: 'reviewSubmissions',
-        element: <ReviewSubmissions />
+        element: <RoleBasedRoute allowedRoles={['instructor']}><ReviewSubmissions /></RoleBasedRoute>
       },
     ]
   },

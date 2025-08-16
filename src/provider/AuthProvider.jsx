@@ -8,12 +8,17 @@ const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const googleProvider = new GoogleAuthProvider();
   const axiosPublic = useAxiosPublic();
 
   const createUser = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password)
+  }
+
+  const updateUserRole = (role) => {
+    setUserRole(role);
   }
 
   const signIn = (email, password) => {
@@ -59,12 +64,18 @@ const AuthProvider = ({ children }) => {
         axiosPublic.post('/jwt', { email: currentUser.email })
           .then(res => {
             console.log('JWT generated successfully', res.data);
+            // Store user role from JWT response
+            if (res.data.user && res.data.user.role) {
+              setUserRole(res.data.user.role);
+            }
           })
           .catch(error => {
             console.log('Error generating JWT:', error);
             // If JWT generation fails, it might be because user doesn't exist in DB yet
             // This is handled during signup
           });
+      } else {
+        setUserRole(null);
       }
       setLoading(false);
     });
@@ -74,12 +85,14 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     user,
+    userRole,
     loading,
     createUser,
     signIn,
     googleSignIn,
     logOut,
-    updateUserProfile
+    updateUserProfile,
+    updateUserRole
   }
 
   return (

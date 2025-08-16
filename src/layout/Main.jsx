@@ -5,7 +5,8 @@ import useAuth from '../hooks/useAuth';
 import { MdReviews } from "react-icons/md";
 
 const Main = () => {
-  const { user, logOut } = useAuth();
+  const { user, userRole, logOut } = useAuth();
+  const isInstructor = userRole === 'instructor';
 
   const handleLogout = async () => {
     try {
@@ -38,60 +39,71 @@ const Main = () => {
               <p className="text-sm text-blue-100 text-center">
                 {user.email}
               </p>
+              <p className="text-xs text-blue-200 text-center mt-1 capitalize">
+                {userRole || 'User'}
+              </p>
             </div>
           </div>
+
+
 
           {/* Navigation Menu */}
           <nav className="flex-1 px-6">
             <ul className="space-y-2">
-              <li>
-                <Link to='/'>
-                  <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
-                    <FaUser size={20} className="mr-3" />
-                    <span>Home</span>
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link to='/assignment'>
-                  <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
-                    <FaCalendarAlt size={20} className="mr-3" />
-                    <span>Assignment</span>
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link to='/submission'>
-                  <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
-                    <FaFileAlt size={20} className="mr-3" />
-                    <span>Submission</span>
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link to='/manageAssignments'>
-                  <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
-                    <FaCalendarAlt size={20} className="mr-3" />
-                    <span>Manage Assignments</span>
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link to='/addAssignment'>
-                  <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
-                    <FaPlus size={20} className="mr-3" />
-                    <span>Add Assignments</span>
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link to='/reviewSubmissions'>
-                  <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
-                    <MdReviews size={20} className="mr-3" />
-                    <span>Review Submissions</span>
-                  </div>
-                </Link>
-              </li>
+              {
+                isInstructor ? <>
+                {/* instructor ui */}
+                  <li>
+                    <Link to='/manageAssignments'>
+                      <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                        <FaCalendarAlt size={20} className="mr-3" />
+                        <span>Manage Assignments</span>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to='/addAssignment'>
+                      <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                        <FaPlus size={20} className="mr-3" />
+                        <span>Add Assignments</span>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to='/reviewSubmissions'>
+                      <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                        <MdReviews size={20} className="mr-3" />
+                        <span>Review Submissions</span>
+                      </div>
+                    </Link>
+                  </li>
+                </> : <>
+                {/* student ui */}
+                <li>
+                  <Link to='/'>
+                    <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                      <FaUser size={20} className="mr-3" />
+                      <span>Home</span>
+                    </div>
+                  </Link>
+                </li>
+                  <li>
+                    <Link to='/assignment'>
+                      <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                        <FaCalendarAlt size={20} className="mr-3" />
+                        <span>Assignment</span>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to='/submission'>
+                      <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                        <FaFileAlt size={20} className="mr-3" />
+                        <span>Submission</span>
+                      </div>
+                    </Link>
+                  </li></>
+              }
             </ul>
           </nav>
 

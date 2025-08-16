@@ -77,7 +77,7 @@ const SubmissionForm = () => {
         <div>
           <label className="label font-semibold">Submitted At</label>
           <input
-            type="datetime-local"
+            type="date"
             name="submittedAt"
             // value={formData.submittedAt}
             // onChange={handleChange}
