@@ -33,7 +33,7 @@ const MySubmissions = () => {
           </thead>
           <tbody>
             {submissions.map((submission, index) => (
-              <tr key={submission.id}>
+              <tr key={submission._id}>
                 <td>{index + 1}</td>
                 <td>{submission.assignmentId}</td>
                 <td>

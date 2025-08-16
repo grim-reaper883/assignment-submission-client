@@ -60,19 +60,18 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
       if (currentUser) {
-        // Only generate JWT if user exists in Firebase
+        
         axiosPublic.post('/jwt', { email: currentUser.email })
           .then(res => {
             console.log('JWT generated successfully', res.data);
-            // Store user role from JWT response
+           
             if (res.data.user && res.data.user.role) {
               setUserRole(res.data.user.role);
             }
           })
           .catch(error => {
             console.log('Error generating JWT:', error);
-            // If JWT generation fails, it might be because user doesn't exist in DB yet
-            // This is handled during signup
+            
           });
       } else {
         setUserRole(null);
