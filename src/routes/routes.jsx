@@ -10,6 +10,8 @@ import ManageAssignments from "../pages/ManageAssignments";
 import ReviewSubmissions from "../pages/ReviewSubmissions";
 import AddAssignment from "../pages/AddAssignment";
 import SubmissionForm from "../pages/SubmissionForm";
+import SubmissionChart from "../components/SubmissionChart";
+import Dashboard from "../pages/Dashboard";
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +45,10 @@ export const router = createBrowserRouter([
       {
         path: 'reviewSubmissions',
         element: <ReviewSubmissions />
+      },
+      {
+        path: 'dashboard',
+        element: <Dashboard />
       },
     ]
   },

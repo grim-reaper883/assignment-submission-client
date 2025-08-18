@@ -2,7 +2,7 @@ import { FaCalendarAlt, FaCreditCard, FaFileAlt, FaPlus, FaSignOutAlt, FaUser } 
 import { Outlet } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import useAuth from '../hooks/useAuth';
-import { MdReviews } from "react-icons/md";
+import { MdDashboard, MdReviews } from "react-icons/md";
 
 const Main = () => {
   const { user, userRole, logOut } = useAuth();
@@ -58,6 +58,14 @@ const Main = () => {
                       <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
                         <FaUser size={20} className="mr-3" />
                         <span>Home</span>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to='/dashboard'>
+                      <div className="flex items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">
+                        <MdDashboard size={20} className="mr-3" />
+                        <span>Dashboard</span>
                       </div>
                     </Link>
                   </li>
