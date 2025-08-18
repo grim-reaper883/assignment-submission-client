@@ -25,14 +25,14 @@ const SubmissionChart = ({ data = {} }) => {
   }
 
   return (
-    <div className="w-full h-[420px] flex justify-center"> 
+    <div className="w-full h-[620px] flex justify-center"> 
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={chartData}
             cx="50%"
             cy="50%"
-            outerRadius={140}  
+            outerRadius={240}  
             dataKey="value"
             label={({ name, value }) => `${name}: ${value}`} 
           >
