@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import useAxiosPublic from '../hooks/useAxiosPublic';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const SubmissionForm = () => {
   const { user } = useAuth();
@@ -18,6 +18,15 @@ const SubmissionForm = () => {
     feedback: '',
     submittedAt: new Date().toISOString().split('T')[0]
   });
+  const location = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const assignmentIdFromQuery = searchParams.get('assignmentId') || '';
+
+  useEffect(() => {
+    if (assignmentIdFromQuery) {
+      setFormData(prev => ({ ...prev, assignmentId: assignmentIdFromQuery }));
+    }
+  }, [assignmentIdFromQuery]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,7 +62,13 @@ const SubmissionForm = () => {
       navigate('/submission');
     } catch (error) {
       console.error('Submission error:', error);
-      setError('Failed to submit assignment. Please try again.');
+      if (error.response?.status === 409) {
+        setError('You have already submitted this assignment.');
+      } else if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('Failed to submit assignment. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -85,7 +100,7 @@ const SubmissionForm = () => {
             className="input input-bordered w-full"
             placeholder="Enter assignment ID"
             required
-            disabled={loading}
+            disabled={loading || Boolean(assignmentIdFromQuery)}
           />
         </div>
 
