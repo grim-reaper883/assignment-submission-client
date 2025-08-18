@@ -34,7 +34,6 @@ const SubmissionForm = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
     if (error) setError('');
   };
 
