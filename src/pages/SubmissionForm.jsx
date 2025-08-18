@@ -58,7 +58,6 @@ const SubmissionForm = () => {
 
       await axiosPublic.post('/submissions', submissionData);
       
-      // Redirect to submissions page after successful submission
       navigate('/submission');
     } catch (error) {
       console.error('Submission error:', error);
